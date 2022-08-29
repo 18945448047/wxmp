@@ -1,8 +1,7 @@
 import random
 from time import localtime
 from requests import get, post
-from datetime import datetime, date
-from zhdate import ZhDate
+from datetime import datetime
 import sys
 import os
  
@@ -27,7 +26,7 @@ def get_access_token():
         print("获取access_token失败，请检查app_id和app_secret是否正确")
         os.system("pause")
         sys.exit(1)
-    # print(access_token)
+    print(access_token)
     return access_token
  
  
@@ -59,8 +58,8 @@ def get_weather(region):
     # 风向
     wind_dir = response["now"]["windDir"]
     return weather, temp, wind_dir
-
  
+
 def get_ciba():
     url = "http://open.iciba.com/dsapi/"
     headers = {
@@ -82,6 +81,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
     day = localtime().tm_mday
     today = datetime.date(datetime(year=year, month=month, day=day))
     week = week_list[today.isoweekday() % 7]
+
     data = {
         "touser": to_user,
         "template_id": config["template_id"],
@@ -108,10 +108,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": wind_dir,
                 "color": get_color()
             },
-            "love_day": {
-                "value": love_days,
-                "color": get_color()
-            },
+
             "note_en": {
                 "value": note_en,
                 "color": get_color()
@@ -122,8 +119,6 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
             }
         }
     }
-
-
     headers = {
         'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
